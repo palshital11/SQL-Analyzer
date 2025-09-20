@@ -1,11 +1,299 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Supply Chain SQL Analyzer</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Analyzer | Mini Project</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    .code-editor {
+        font-family: 'Fira Code', monospace;
+        tab-size: 2;
+    }
+    .syntax-highlight {
+        color: #f8f8f2;
+        background-color: #282a36;
+    }
+</style>
 </head>
-<body>
-  <h1>Supply Chain SQL Analyzer</h1>
-  <p>This project demonstrates SQL-based analysis for supply chain optimization.</p>
-  <p>Status: 🚧 Work in Progress 🚧</p>
+<body class="bg-gray-100 min-h-screen">
+<div class="container mx-auto px-4 py-8">
+
+    <!-- Header -->
+    <header class="mb-8">
+        <div class="flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-blue-600 flex items-center">
+                <i data-feather="database" class="mr-2"></i> SQL Analyzer
+            </h1>
+            <div class="flex space-x-4">
+                <button id="save-btn" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center">
+                    <i data-feather="save" class="mr-2"></i> Save
+                </button>
+                <button id="learn-btn" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition flex items-center">
+                    <i data-feather="book" class="mr-2"></i> Learn
+                </button>
+            </div>
+        </div>
+        <p class="text-gray-600 mt-2">Analyze and optimize your SQL queries in real-time</p>
+    </header>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- SQL Input -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="bg-gray-800 text-white px-4 py-3 flex justify-between items-center">
+                <h2 class="font-semibold">SQL Query</h2>
+                <button id="format-btn" class="px-3 py-1 bg-blue-500 rounded text-sm hover:bg-blue-600 transition flex items-center">
+                    <i data-feather="align-left" class="mr-1 w-4 h-4"></i> Format
+                </button>
+            </div>
+            <div class="p-4">
+                <textarea id="sql-input" class="code-editor w-full h-64 p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your SQL query here..."></textarea>
+            </div>
+        </div>
+
+        <!-- Analysis Results -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="bg-gray-800 text-white px-4 py-3">
+                <h2 class="font-semibold">Analysis Results</h2>
+            </div>
+            <div class="p-4">
+                <div id="results-container" class="space-y-4">
+                    <div class="text-center py-10 text-gray-400">
+                        <i data-feather="alert-circle" class="w-12 h-12 mx-auto mb-3"></i>
+                        <p>Enter a SQL query to see analysis results</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <div class="text-blue-500 mb-4">
+                <i data-feather="zap" class="w-8 h-8"></i>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Performance Analysis</h3>
+            <p class="text-gray-600">Get insights on query execution time and potential bottlenecks.</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <div class="text-blue-500 mb-4">
+                <i data-feather="search" class="w-8 h-8"></i>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Syntax Check</h3>
+            <p class="text-gray-600">Validate your SQL syntax and catch errors before execution.</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <div class="text-blue-500 mb-4">
+                <i data-feather="lightbulb" class="w-8 h-8"></i>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Optimization Tips</h3>
+            <p class="text-gray-600">Receive suggestions to improve your query performance.</p>
+        </div>
+    </div>
+
+    <!-- Learning Section (Initially Hidden) -->
+    <div id="learning-section" class="mt-16 bg-white rounded-xl shadow-md overflow-hidden" style="display:none;">
+        <div class="bg-gray-800 text-white px-4 py-3">
+            <h2 class="font-semibold">SQL Basics</h2>
+        </div>
+        <div class="p-6">
+            <div class="prose max-w-none">
+                <h3 class="text-xl font-semibold mb-4">Essential SQL Keywords</h3>
+
+                <div class="mb-6">
+                    <h4 class="font-medium text-blue-600 mb-2">SELECT</h4>
+                    <p class="mb-2">Retrieves data from a database. Always starts a query.</p>
+                    <div class="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm">
+                        SELECT first_name, last_name FROM customers;
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-medium text-blue-600 mb-2">FROM</h4>
+                    <p class="mb-2">Specifies which table to get data from.</p>
+                    <div class="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm">
+                        SELECT * FROM products;
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-medium text-blue-600 mb-2">WHERE</h4>
+                    <p class="mb-2">Filters records based on conditions.</p>
+                    <div class="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm">
+                        SELECT * FROM orders WHERE total > 100;
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-medium text-blue-600 mb-2">JOIN</h4>
+                    <p class="mb-2">Combines rows from two or more tables.</p>
+                    <div class="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm">
+                        SELECT orders.id, customers.name<br>
+                        FROM orders<br>
+                        JOIN customers ON orders.customer_id = customers.id;
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-medium text-blue-600 mb-2">GROUP BY</h4>
+                    <p class="mb-2">Groups rows that have the same values.</p>
+                    <div class="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm">
+                        SELECT department, COUNT(*) as employees<br>
+                        FROM staff<br>
+                        GROUP BY department;
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h4 class="font-medium text-blue-600 mb-2">ORDER BY</h4>
+                    <p class="mb-2">Sorts the result set in ascending or descending order.</p>
+                    <div class="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm">
+                        SELECT * FROM products ORDER BY price DESC;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+feather.replace();
+
+// SQL Formatter & Analyzer
+const SQL_KEYWORDS = ['SELECT','FROM','WHERE','GROUP BY','ORDER BY','JOIN','INNER JOIN','LEFT JOIN','RIGHT JOIN','FULL JOIN','ON','HAVING','LIMIT','INSERT INTO','VALUES','UPDATE','SET','DELETE'];
+
+function formatSQL(query){
+    if(!query) return '';
+    let formatted = query.toUpperCase();
+    SQL_KEYWORDS.forEach(kw=>{
+        const re = new RegExp(`\\b${kw}\\b`,'gi');
+        formatted = formatted.replace(re, `\n${kw}`);
+    });
+    formatted = formatted.replace(/SELECT\s+/g,'SELECT\n  ')
+                         .replace(/FROM\s+/g,'\nFROM\n  ')
+                         .replace(/WHERE\s+/g,'\nWHERE\n  ')
+                         .replace(/GROUP BY\s+/g,'\nGROUP BY\n  ')
+                         .replace(/ORDER BY\s+/g,'\nORDER BY\n  ')
+                         .replace(/JOIN\s+/g,'\nJOIN ');
+    formatted = formatted.replace(/\n{2,}/g,'\n');
+    return formatted.trim();
+}
+
+function analyzeSQL(query){
+    const resultsContainer = document.getElementById('results-container');
+    if(!query){
+        resultsContainer.innerHTML = `<div class="text-center py-10 text-gray-400">
+            <i data-feather="alert-circle" class="w-12 h-12 mx-auto mb-3"></i>
+            <p>Enter a SQL query to see analysis results</p></div>`;
+        feather.replace(); return;
+    }
+    const lowerQuery = query.toLowerCase();
+    const wordCount = query.split(/\s+/).length;
+    const lineCount = query.split('\n').length;
+    const hasSelect = lowerQuery.includes('select');
+    const hasWhere = lowerQuery.includes('where');
+    const hasJoin = lowerQuery.includes('join');
+    const hasGroupBy = lowerQuery.includes('group by');
+    const hasOrderBy = lowerQuery.includes('order by');
+    const hasSelectAll = lowerQuery.includes('select *');
+
+    let tips=[];
+    if(hasSelectAll) tips.push('Avoid SELECT * - specify columns instead');
+    if(hasSelect && !hasWhere) tips.push('Consider adding a WHERE clause to filter results');
+    if(hasOrderBy) tips.push('ORDER BY can be expensive - use only when needed');
+    if(lineCount>20) tips.push('Query is long - consider breaking it into smaller parts');
+    if(hasJoin && !hasWhere) tips.push('JOIN without WHERE may produce large result sets');
+
+    resultsContainer.innerHTML = `
+    <div class="space-y-4">
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <h4 class="font-medium text-blue-800 mb-2">Basic Stats</h4>
+        <ul class="text-sm space-y-1">
+          <li>Words: ${wordCount}</li>
+          <li>Lines: ${lineCount}</li>
+        </ul>
+      </div>
+      <div class="bg-green-50 p-4 rounded-lg">
+        <h4 class="font-medium text-green-800 mb-2">Query Structure</h4>
+        <ul class="text-sm space-y-1">
+          <li>SELECT clause: ${hasSelect?'✅ Present':'❌ Missing'}</li>
+          ${hasSelect?`<li>WHERE clause: ${hasWhere?'✅ Present':'⚠️ Consider adding'}</li>`:''}
+          ${hasSelect?`<li>JOIN operations: ${hasJoin?'✅ Present':'⚠️ Consider adding'}</li>`:''}
+          ${hasGroupBy?`<li>GROUP BY: ✅ Present</li>`:''}
+          ${hasOrderBy?`<li>ORDER BY: ✅ Present</li>`:''}
+        </ul>
+      </div>
+      <div class="bg-yellow-50 p-4 rounded-lg">
+        <h4 class="font-medium text-yellow-800 mb-2">Optimization Tips</h4>
+        <ul class="text-sm space-y-1">
+          ${tips.length>0?tips.map(t=>`<li>${t}</li>`).join(''):'<li>No immediate issues detected ✅</li>'}
+        </ul>
+      </div>
+    </div>`;
+    feather.replace();
+}
+
+function showAnalysisResult(message,type){
+    const resultsContainer=document.getElementById('results-container');
+    let alertClass,icon;
+    switch(type){
+        case 'success': alertClass='bg-green-100 text-green-800'; icon='check-circle'; break;
+        case 'error': alertClass='bg-red-100 text-red-800'; icon='alert-triangle'; break;
+        default: alertClass='bg-blue-100 text-blue-800'; icon='info'; break;
+    }
+    resultsContainer.innerHTML = `<div class="${alertClass} p-4 rounded-lg flex items-start">
+        <i data-feather="${icon}" class="mr-3 w-5 h-5 mt-0.5"></i>
+        <div>${message}</div></div>`;
+    feather.replace();
+}
+
+// Event Listeners
+let debounceTimer;
+document.getElementById('sql-input').addEventListener('input', function(){
+    clearTimeout(debounceTimer);
+    debounceTimer=setTimeout(()=>analyzeSQL(this.value),300);
+});
+
+document.getElementById('format-btn').addEventListener('click',()=>{
+    const sqlInput = document.getElementById('sql-input');
+    const formatted = formatSQL(sqlInput.value);
+    sqlInput.value = formatted;
+    analyzeSQL(formatted);
+    showAnalysisResult('Query formatted successfully!','success');
+});
+
+document.getElementById('save-btn').addEventListener('click',()=>{
+    const query=document.getElementById('sql-input').value.trim();
+    if(query){
+        localStorage.setItem('savedQuery',query);
+        showAnalysisResult('Query saved to browser storage!','success');
+    }else showAnalysisResult('No query to save. Please enter a SQL query first.','error');
+});
+
+// Learn button click
+document.getElementById('learn-btn').addEventListener('click',()=>{
+    const learnSection = document.getElementById('learning-section');
+    if(learnSection.style.display==='none'){
+        learnSection.style.display='block';
+        learnSection.scrollIntoView({behavior:'smooth'});
+    } else {
+        learnSection.scrollIntoView({behavior:'smooth'});
+    }
+});
+
+// Load saved query on page load
+window.addEventListener('load',()=>{
+    const savedQuery=localStorage.getItem('savedQuery');
+    if(savedQuery){
+        const sqlInput=document.getElementById('sql-input');
+        sqlInput.value=savedQuery;
+        analyzeSQL(savedQuery);
+    }
+});
+</script>
 </body>
 </html>
